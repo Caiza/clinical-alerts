@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class PatientDTO {
     private Long id;
     private String name;
-    private LocalDate dateOfbirth;
+    private LocalDate dateOfBirth;
     private String gender;
     private Boolean status;
     private Integer numberId;

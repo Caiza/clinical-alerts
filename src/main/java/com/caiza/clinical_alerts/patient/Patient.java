@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
-@Table(name = "patients")
+@Table(name = "patient")
 @Getter
 @Setter
 @Builder
@@ -18,9 +18,11 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private LocalDate dateOfbirth;
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
     private String gender;
     private Boolean status;
+    @Column(name = "number_id", unique = true)
     private Integer numberId;
 
 }

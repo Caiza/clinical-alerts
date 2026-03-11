@@ -1,5 +1,6 @@
 package com.caiza.clinical_alerts.patient;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -7,11 +8,8 @@ import java.util.List;
 @Service
 public class PatientService {
 
-    private final PatientRepository patientRepository;
-
-    public PatientService(PatientRepository patientRepository){
-        this.patientRepository = patientRepository;
-    }
+    @Autowired
+    private PatientRepository patientRepository;
 
     public Patient create(PatientDTO patientDTO){
         Patient patient = PatientMapper.toEntity(patientDTO);
@@ -26,8 +24,7 @@ public class PatientService {
     }
 
     public Patient findById(Long id){
-        return patientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Patient with id " + id + " not found."));
+        return patientRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Patient with id " + id + " not found."));
     }
 
     public void delete(Long id){

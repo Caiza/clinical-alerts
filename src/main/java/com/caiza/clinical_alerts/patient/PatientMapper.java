@@ -6,7 +6,7 @@ public class PatientMapper {
         return new PatientDTO(
                 patient.getId(),
                 patient.getName(),
-                patient.getDateOfbirth(),
+                patient.getDateOfBirth(),
                 patient.getGender(),
                 patient.getStatus(),
                 patient.getNumberId()
@@ -17,7 +17,7 @@ public class PatientMapper {
         return new Patient(
                 patientDTO.getId(),
                 patientDTO.getName(),
-                patientDTO.getDateOfbirth(),
+                patientDTO.getDateOfBirth(),
                 patientDTO.getGender(),
                 patientDTO.getStatus(),
                 patientDTO.getNumberId()
