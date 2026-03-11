@@ -1,0 +1,377 @@
+*Telemetry & Clinical Alerts Platform*
+
+Software Requirements Specification (SRS)
+
+*1. System Overview*
+
+The Clinical Telemetry & Alerts Platform is a backend system designed to receive telemetr data from medical devices, process it asynchronously, evaluate clinical rules, and generate alerts when abnormal values are detected.
+
+The system demonstrates an *event-driven architecture* using:
+
+- Java
+- Spring Boot
+- Apache Kafka
+- PostgreSQL
+- Docker
+
+The application aims to simulate real-world backend systems used in health monitoring platforms, emphasizing scalability, reliability, and maintainability.
+
+*2. Objectives*
+
+The primary objective of the system is to:
+
+- Receive telemetry data from monitoring devices.
+- Process telemetry asynchronously using Kafka.
+- Evaluate medical rules to classify the severity of readings.
+- Generate alerts when abnormal conditions are detected.
+- Provide historical access to telemetry and alerts.
+
+This project also demonstrates the use of software engineering best practices and design patterns such as:
+
+- Strategy
+- Factory
+- Observer
+- Template Method
+- Chain of Responsibility
+- Builder
+
+*3. Scope*
+
+The system focuses on backend processing of telemetry data.
+The following capabilities are included:
+
+- Patient management
+- Device management
+- Telemetry ingestion
+- Asynchronous processing
+- Alert generation
+- Historical querying
+- Monitoring and observability
+
+*4. Functional Requirements*
+FR01 — Patient Registration
+
+The system must allow the creation of patient records with the following information:
+
+- id
+- name
+- birth date
+- gender
+- optional document identifier
+- status (ACTIVE / INACTIVE)
+
+*FR02 — Device Registration*
+
+The system must allow the registration of telemetry devices with the following information:
+
+- id
+- serial number
+- device type
+- manufacturer
+- model
+- status (ACTIVE / INACTIVE / MAINTENANCE)
+
+*FR03 — Device Assignment to Patient*
+
+The system must allow associating a device with a patient.
+The assignment record must contain:
+
+- patient
+- device
+- assignment start time
+- assignment end time (optional)
+
+*FR04 — Telemetry Ingestion*
+
+The system must provide an API endpoint to receive telemetry readings containing:
+
+- device identifier
+- patient identifier (optional)
+- signal type
+- value
+- unit
+- measurement timestamp
+- optional metadata
+
+*FR05 — Telemetry Event Publication*
+
+After receiving a valid telemetry reading, the system must publish an event to a Kafka topic for asynchronous processing.
+
+*FR06 — Telemetry Persistence*
+
+The system must persist all received telemetry readings for historical tracking and auditing.
+
+*FR07 — Telemetry Processing*
+
+The system must consume telemetry events from Kafka and apply rule evaluation logic.
+
+*FR08 — Risk Classification*
+
+Each telemetry reading must be classified into one of the following levels:
+
+- NORMAL
+- WARNING
+- CRITICAL
+
+*FR09 — Alert Generation*
+
+If a telemetry reading violates a predefined rule, the system must generate an alert containing:
+
+- patient
+- device
+- signal type
+- measured value
+- severity level
+- message
+- timestamp
+- alert status
+
+*FR10 — Alert Query*
+
+The system must allow querying alerts using filters such as:
+
+- patient
+- device
+- severity
+- status
+- time range
+
+*FR11 — Alert Status Update*
+
+The system must allow updating the alert status.
+Possible statuses include:
+
+- OPEN
+- UNDER_REVIEW
+- RESOLVED
+- CANCELLED
+
+*FR12 — Telemetry History*
+
+The system must allow querying historical telemetry data using filters such as:
+
+- patient
+- device
+- signal type
+- time interval
+
+*FR13 — Payload Validation*
+
+All telemetry payloads must be validated before processing to ensure required fields and acceptable value ranges.
+
+*FR14 — Invalid Message Handling*
+
+Invalid telemetry messages must be logged and prevented from entering the main processing flow.
+
+*FR15 — Security*
+
+The system must restrict administrative and query endpoints using authentication and authorization mechanisms.
+
+*5. Non-Functional Requirements*
+NFR01 — Scalability
+
+Telemetry processing must be decoupled from the ingestion API using Kafka.
+
+*NFR02 — Resilience*
+
+Failures in message consumers must not interrupt the ingestion service.
+
+*NFR03 — Observability*
+
+The application must expose monitoring endpoints using Spring Boot Actuator.
+These endpoints include:
+
+- health checks
+- metrics
+- application information
+
+*NFR04 — Traceability*
+
+Each telemetry event must be traceable using event identifiers or correlation IDs.
+
+*NFR05 — Maintainability*
+The system must follow a clean separation of concerns between:
+
+- domain
+- application
+- infrastructure
+- API layers
+
+*NFR06 — Extensibility*
+
+The architecture must allow the addition of new telemetry types and rule strategies with minimal code changes.
+
+*NFR07 — Database Migration*
+
+Database schema changes must be managed using Flyway migrations.
+
+*NFR08 — Portability*
+
+The system must run locally using Docker Compose, including Kafka, PostgreSQL, and the application service.
+
+*NFR09 — Testability*
+
+The system must support unit tests and integration tests.
+
+*6. Supported Telemetry Types (Initial Version)*
+The system initially supports the following clinical signals:
+
+- Heart Rate
+- Oxygen Saturation
+- Body Temperature
+- Blood Pressure
+
+*7. Example Telemetry Payload*
+
+{
+    "deviceId": "DEV-1001",
+    "patientId": "PAT-2001",
+    "signalType": "HEART_RATE",
+    "value": 132.0,
+    "unit": "bpm",
+    "measuredAt": "2026-03-06T10:15:30Z"
+}
+
+*8. Business Rules*
+
+*Heart Rate*
+- below 50 bpm → WARNING
+- above 120 bpm → CRITICAL
+
+*Oxygen Saturation*
+- below 95% → WARNING
+- below 90% → CRITICAL
+
+*Body Temperature*
+- between 37.5°C and 38.4°C → WARNING
+- above 38.5°C → CRITICAL
+
+*Blood Pressure (Systolic)*
+- above 140 → WARNING
+- above 180 → CRITICAL
+
+*9. Suggested Kafka Topics*
+
+The system may use the following topics:
+
+- telemetry.received
+- telemetry.invalid
+- telemetry.processed
+- alert.generated
+
+For the MVP, the following topics are sufficient:
+
+- telemetry.received
+- alert.generated
+
+*10. Domain Model (Initial)*
+
+Patient
+
+- id
+- name
+- birthDate
+- status
+
+Device
+
+- id
+- serialNumber
+- type
+- manufacturer
+- model
+- status
+
+DeviceAssignment
+
+- id
+- patientId
+- deviceId
+- assignedAt
+- unassignedAt
+
+TelemetryRecord
+
+- id
+- patientId
+- deviceId
+- signalType
+- value
+- unit
+- measuredAt
+- receivedAt
+- processingStatus
+
+Alert
+
+- id
+- telemetryRecordId
+- patientId
+- deviceId
+- signalType
+- measuredValue
+- severity
+- message
+- status
+- createdAt
+- resolvedAt
+
+*11. Suggested REST API Endpoints*
+*Patients*
+
+POST /api/patients
+GET /api/patients
+GET /api/patients/{id}
+
+*Devices*
+
+POST /api/devices
+GET /api/devices
+GET /api/devices/{id}
+
+*Device Assignment*
+
+POST /api/device-assignments
+
+*Telemetry*
+
+POST /api/telemetry
+GET /api/telemetry
+GET /api/telemetry/{id}
+
+*Alerts*
+
+GET /api/alerts
+GET /api/alerts/{id}
+PATCH /api/alerts/{id}/status
+
+*Monitoring*
+
+GET /actuator/health
+GET /actuator/metrics
+
+12. MVP Scope
+
+The initial version of the project includes:
+
+- Patient registration
+- Device registration
+- Telemetry ingestion API
+- Kafka event publishing
+- Kafka consumer for telemetry processing
+- Rule evaluation using the Strategy pattern
+- Alert generation
+- PostgreSQL persistence
+- Alert querying
+
+13. Project Architecture Goals
+
+This project demonstrates:
+
+- Event-driven architecture
+- Asynchronous message processing
+- Domain-driven design principles
+- Application of software design patterns
+- Clean architecture layering
+- Observability and monitoring
+- Containerized deployment
