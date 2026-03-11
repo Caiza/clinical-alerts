@@ -1,8 +1,11 @@
 package com.caiza.clinical_alerts.patient;
 
+import com.caiza.clinical_alerts.exception.BusinessException;
+import com.caiza.clinical_alerts.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.module.ResolutionException;
 import java.util.List;
 
 @Service
@@ -14,7 +17,7 @@ public class PatientService {
     public Patient create(PatientDTO patientDTO){
         Patient patient = PatientMapper.toEntity(patientDTO);
         if(patientRepository.existsByNumberId(patient.getNumberId())){
-            throw new IllegalArgumentException("Patient with numberId " + patient.getNumberId() + " already exists.");
+            throw new BusinessException("Patient with numberId " + patient.getNumberId() + " already exists.");
         }
         return patientRepository.save(patient);
     }
@@ -24,7 +27,7 @@ public class PatientService {
     }
 
     public Patient findById(Long id){
-        return patientRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Patient with id " + id + " not found."));
+        return patientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patient with id " + id + " not found."));
     }
 
     public void delete(Long id){
