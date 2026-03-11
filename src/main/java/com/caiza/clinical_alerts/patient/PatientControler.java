@@ -1,5 +1,6 @@
 package com.caiza.clinical_alerts.patient;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ public class PatientControler {
     @Autowired
     private PatientService patientService;
 
+    @Operation(summary = "Create a new patient", description = "Creates a new patient with the provided details.")
     @PostMapping("/save")
     public ResponseEntity<PatientDTO> createPatient(@RequestBody @Valid PatientDTO patientDTO) {
         Patient saved = patientService.create(patientDTO);
