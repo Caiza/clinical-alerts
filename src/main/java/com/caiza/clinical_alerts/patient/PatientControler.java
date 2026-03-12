@@ -46,11 +46,19 @@ public class PatientControler {
     }
     @Operation(summary = "Get patients by status", description = "Retrieves a list of patients filtered by their status (active/inactive).")
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<PatientDTO>> getPatientByStatus(@PathVariable Boolean status, @RequestParam int page, @RequestParam int size){
+    public ResponseEntity<List<PatientDTO>> getPatientByStatus(@PathVariable Boolean status, @RequestParam int page,
+                                                               @RequestParam int size){
         Pageable pageable = PageRequest.of(page, size);
         List<Patient> patientList = patientService.findByStatus(status, pageable);
         List<PatientDTO> response = PatientMapper.toListDTO(patientList);
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a patient", description = "Deletes a patient by their unique ID.")
+    public ResponseEntity<PatientDTO> deletePatient(@PathVariable Long id){
+        patientService.delete(id);
+        return ResponseEntity.noContent().build();
     }
     
 

@@ -9,7 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
-    List<Patient> findByName(String name);
     Optional<Patient> findById(Long id);
     Boolean existsByNumberId(Integer numberId);
     List<Patient> findByStatus(Boolean status, Pageable pageable);
