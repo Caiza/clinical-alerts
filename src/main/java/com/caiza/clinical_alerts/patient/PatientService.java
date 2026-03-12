@@ -3,6 +3,7 @@ package com.caiza.clinical_alerts.patient;
 import com.caiza.clinical_alerts.exception.BusinessException;
 import com.caiza.clinical_alerts.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -34,8 +35,8 @@ public class PatientService {
         return patientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patient with id " + id + " not found."));
     }
 
-    public List<Patient> findByStatus(Boolean status, Pageable pageable){
-        List<Patient> patients = patientRepository.findByStatus(status, pageable);
+    public Page<Patient> findByStatus(Boolean status, Pageable pageable){
+        Page<Patient> patients = patientRepository.findByStatus(status, pageable);
         if(patients.isEmpty()){
             throw new ResourceNotFoundException("No patients found with status " + status + ".");
         }

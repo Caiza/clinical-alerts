@@ -46,11 +46,11 @@ public class PatientControler {
     }
     @Operation(summary = "Get patients by status", description = "Retrieves a list of patients filtered by their status (active/inactive).")
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<PatientDTO>> getPatientByStatus(@PathVariable Boolean status, @RequestParam int page,
+    public ResponseEntity<Page<PatientDTO>> getPatientByStatus(@PathVariable Boolean status, @RequestParam int page,
                                                                @RequestParam int size){
         Pageable pageable = PageRequest.of(page, size);
-        List<Patient> patientList = patientService.findByStatus(status, pageable);
-        List<PatientDTO> response = PatientMapper.toListDTO(patientList);
+        Page<Patient> patientList = patientService.findByStatus(status, pageable);
+        Page<PatientDTO> response = PatientMapper.toListDTO(patientList);
         return ResponseEntity.ok(response);
     }
 
