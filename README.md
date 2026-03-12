@@ -30,7 +30,7 @@ Controller -> Service -> Repository -> Database
 - **Model Layer**: Contains entity classes representing the database tables.
 - **DTO Layer**: Contains Data Transfer Objects for transferring data between layers.
 - **Exception Handling**: Custom exceptions and global exception handling for better error management.
-- **Database - PostgresSQL.
+- **Database** - PostgresSQL.
 - Database migrations are managed using Flyway, ensuring smooth schema evolution.
 
 ## API Endpoints
@@ -87,7 +87,7 @@ API -> Service : createPatient(patientDTO)
 Service -> Repository : save(patient)
 Repository -> DB : INSERT INTO patient (...)
 DB --> Repository : Patient data
-Repository --> Service : asved patient
+Repository --> Service : saved patient
 Service --> API : patient response
 API --> Client : HTTP 201 Created
 

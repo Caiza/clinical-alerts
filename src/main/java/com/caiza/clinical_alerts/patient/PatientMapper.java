@@ -1,5 +1,7 @@
 package com.caiza.clinical_alerts.patient;
 
+import java.util.List;
+
 public class PatientMapper {
 
     public static PatientDTO toDTO(Patient patient) {
@@ -22,5 +24,8 @@ public class PatientMapper {
                 patientDTO.getStatus(),
                 patientDTO.getNumberId()
         );
+    }
+    public static List<PatientDTO> toListDTO(List<Patient> patientList){
+        return patientList.stream().map(PatientMapper::toDTO).toList();
     }
 }

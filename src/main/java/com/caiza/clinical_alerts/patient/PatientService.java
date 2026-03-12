@@ -5,7 +5,7 @@ import com.caiza.clinical_alerts.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.module.ResolutionException;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Service
@@ -23,11 +23,23 @@ public class PatientService {
     }
 
     public List<Patient> findAll(){
-        return patientRepository.findAll();
+        List<Patient> patients = patientRepository.findAll();
+        if(patients.isEmpty()){
+            throw new ResourceNotFoundException("No patients found.");
+        }
+        return patients;
     }
 
     public Patient findById(Long id){
         return patientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patient with id " + id + " not found."));
+    }
+
+    public List<Patient> findByStatus(Boolean status, Pageable pageable){
+        List<Patient> patients = patientRepository.findByStatus(status, pageable);
+        if(patients.isEmpty()){
+            throw new ResourceNotFoundException("No patients found with status " + status + ".");
+        }
+        return patients;
     }
 
     public void delete(Long id){
