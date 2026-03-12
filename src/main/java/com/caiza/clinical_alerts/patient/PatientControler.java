@@ -26,4 +26,6 @@ public class PatientControler {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    
+
 }
