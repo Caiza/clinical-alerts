@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PatientService {
@@ -23,8 +24,8 @@ public class PatientService {
         return patientRepository.save(patient);
     }
 
-    public List<Patient> findAll(){
-        List<Patient> patients = patientRepository.findAll();
+    public Page<Patient> findAll(Pageable pageable){
+        Page<Patient> patients = patientRepository.findAll(pageable);
         if(patients.isEmpty()){
             throw new ResourceNotFoundException("No patients found.");
         }
@@ -46,5 +47,19 @@ public class PatientService {
     public void delete(Long id){
         patientRepository.deleteById(id);
     }
+
+    public Patient updatePatient(Long id, PatientDTO patientDTO){
+        Patient patient = findById(id);
+             Patient newPatient = PatientMapper.toEntity(patientDTO);
+        patient.setName(newPatient.getName());
+        patient.setGender(newPatient.getGender());
+        patient.setStatus(newPatient.getStatus());
+        patient.setDateOfBirth(newPatient.getDateOfBirth());
+        return patientRepository.save(patient);
+
+    }
+
+
+
 
 }
