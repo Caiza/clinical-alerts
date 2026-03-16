@@ -46,19 +46,20 @@ public class PatientControler {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary= "Get patient by ID", description = "Retrives a patient by their unique ID.")
+    @Operation(summary = "Get patient by ID", description = "Retrives a patient by their unique ID.")
     @GetMapping("/{id}")
-    public ResponseEntity<PatientDTO> getPatientById(@PathVariable Long id){
+    public ResponseEntity<PatientDTO> getPatientById(@PathVariable Long id) {
         Patient patient = patientService.findById(id);
         PatientDTO response = PatientMapper.toDTO(patient);
         return ResponseEntity.ok(response);
     }
+
     @Operation(summary = "Get patients by status", description = "Retrieves a list of patients filtered by their status (active/inactive).")
     @GetMapping("/status/{status}")
     public ResponseEntity<Page<PatientDTO>> getPatientByStatus(@PathVariable Boolean status, @RequestParam(defaultValue = "0") int page,
                                                                @RequestParam(defaultValue = "10") int size,
                                                                @RequestParam(defaultValue = "id") String sortBy,
-                                                               @RequestParam(defaultValue = "asc") String direction){
+                                                               @RequestParam(defaultValue = "asc") String direction) {
 
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
@@ -72,18 +73,18 @@ public class PatientControler {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a patient", description = "Deletes a patient by their unique ID.")
-    public ResponseEntity<PatientDTO> deletePatient(@PathVariable Long id){
+    public ResponseEntity<PatientDTO> deletePatient(@PathVariable Long id) {
         patientService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a patient", description = "Updates the details of an existing patient by their unique ID.")
-    public ResponseEntity<PatientDTO> updatePatient(@PathVariable Long id, @RequestBody @Valid PatientDTO patientDTO){
-        Patient patient =  patientService.updatePatient(id, patientDTO);
+    public ResponseEntity<PatientDTO> updatePatient(@PathVariable Long id, @RequestBody @Valid PatientDTO patientDTO) {
+        Patient patient = patientService.updatePatient(id, patientDTO);
         PatientDTO response = PatientMapper.toDTO(patient);
         return ResponseEntity.ok(response);
     }
-    
+
 
 }
