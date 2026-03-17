@@ -1,10 +1,9 @@
 package com.caiza.clinical_alerts.telemetry;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -15,6 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Telemetry {
 
     @Id
@@ -34,4 +34,6 @@ public class Telemetry {
     private String optionalMetadata;
     @Column(name= "unit")
     private String unit;
+
+
 }
