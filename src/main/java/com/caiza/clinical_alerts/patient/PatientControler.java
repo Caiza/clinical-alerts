@@ -2,7 +2,7 @@ package com.caiza.clinical_alerts.patient;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,19 +13,17 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/patients")
+@RequestMapping("/api/patients")
+@RequiredArgsConstructor
 public class PatientControler {
 
-    @Autowired
     private PatientService patientService;
 
     @Operation(summary = "Create a new patient", description = "Creates a new patient with the provided details.")
     @PostMapping("/save")
     public ResponseEntity<PatientDTO> createPatient(@RequestBody @Valid PatientDTO patientDTO) {
-        Patient saved = patientService.create(patientDTO);
-        PatientDTO response = PatientMapper.toDTO(saved);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        PatientDTO saved = patientService.create(patientDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     //I implement pagination using Pageable and page and size as query parameters to make the endpoint faster more flexible, and scalable
@@ -41,17 +39,15 @@ public class PatientControler {
                 : Sort.by(sortBy).ascending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Patient> patientList = patientService.findAll(pageable);
-        Page<PatientDTO> response = patientList.map(PatientMapper::toDTO);
-        return ResponseEntity.ok(response);
+        Page<PatientDTO> patientList = patientService.findAll(pageable);
+        return ResponseEntity.ok(patientList);
     }
 
     @Operation(summary = "Get patient by ID", description = "Retrives a patient by their unique ID.")
     @GetMapping("/{id}")
     public ResponseEntity<PatientDTO> getPatientById(@PathVariable Long id) {
-        Patient patient = patientService.findById(id);
-        PatientDTO response = PatientMapper.toDTO(patient);
-        return ResponseEntity.ok(response);
+        PatientDTO patient = patientService.findById(id);
+        return ResponseEntity.ok(patient);
     }
 
     @Operation(summary = "Get patients by status", description = "Retrieves a list of patients filtered by their status (active/inactive).")
@@ -66,9 +62,8 @@ public class PatientControler {
                 : Sort.by(sortBy).ascending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Patient> patientList = patientService.findByStatus(status, pageable);
-        Page<PatientDTO> response = patientList.map(PatientMapper::toDTO);
-        return ResponseEntity.ok(response);
+        Page<PatientDTO> patientList = patientService.findByStatus(status, pageable);
+        return ResponseEntity.ok(patientList);
     }
 
     @DeleteMapping("/{id}")
@@ -81,9 +76,8 @@ public class PatientControler {
     @PutMapping("/{id}")
     @Operation(summary = "Update a patient", description = "Updates the details of an existing patient by their unique ID.")
     public ResponseEntity<PatientDTO> updatePatient(@PathVariable Long id, @RequestBody @Valid PatientDTO patientDTO) {
-        Patient patient = patientService.updatePatient(id, patientDTO);
-        PatientDTO response = PatientMapper.toDTO(patient);
-        return ResponseEntity.ok(response);
+        PatientDTO patient = patientService.updatePatient(id, patientDTO);
+        return ResponseEntity.ok(patient);
     }
 
 

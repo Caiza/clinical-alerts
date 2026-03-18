@@ -18,7 +18,7 @@ public class DevicePatientDTO {
     private Long patientId;
 
     @NotNull
-    private Long deviceId;
+    private Device device;
 
     @NotNull
     private LocalDate assignmentDate;

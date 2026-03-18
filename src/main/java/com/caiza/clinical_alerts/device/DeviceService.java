@@ -1,15 +1,21 @@
 package com.caiza.clinical_alerts.device;
 
 import com.caiza.clinical_alerts.exception.BusinessException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.caiza.clinical_alerts.exception.ResourceNotFoundException;
+import com.caiza.clinical_alerts.patient.PatientMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class DeviceService {
 
-    @Autowired
     public DeviceRepository deviceRepository;
 
     public DeviceDTO createDevice(Device device){
@@ -21,39 +27,31 @@ public class DeviceService {
         DeviceDTO response = DeviceMapper.toDTO(device);
         return response;
     }
-    public Device getDeviceById(Long id){
-        Device device = deviceRepository.getById(id);
-            if(device == null){
-                throw new BusinessException("Device not found");
-            }
-        return device;
+    public Optional<DeviceDTO> getDeviceById(Long id){
+        Device device = deviceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("DevicePatient not found with id: " + id));
+        return Optional.of(DeviceMapper.toDTO(device));
     }
 
     public void deleteDeviceById(Long id){
-        Device device = deviceRepository.getById(id);
-        if(device == null){
-            throw new BusinessException("Device not found");
-        }
+        Device device = deviceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("DevicePatient not found with id: " + id));
         deviceRepository.delete(device);
     }
 
     public DeviceDTO updateDevice(Long id, DeviceDTO deviceDTO){
-        Device deviceUpdate = getDeviceById(id);
-        Device device = DeviceMapper.toEntity(deviceDTO);
-        deviceUpdate.setModel(device.getModel());
-        deviceUpdate.setManufacture(device.getManufacture());
-        deviceUpdate.setIsActive(device.getIsActive());
-        deviceUpdate.setDeviceType(device.getDeviceType());
-        deviceRepository.save(deviceUpdate);
-        DeviceDTO response = DeviceMapper.toDTO(deviceUpdate);
-        return response;
+        Device deviceUpdate = deviceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Device not found"));
+        deviceUpdate.setModel(deviceDTO.getModel());
+        deviceUpdate.setManufacture(deviceDTO.getManufacture());
+        deviceUpdate.setIsActive(deviceDTO.getIsActive());
+        deviceUpdate.setDeviceType(deviceDTO.getDeviceType());
+        Device device = deviceRepository.save(deviceUpdate);
+        return DeviceMapper.toDTO(device);
     }
 
-    public Page<Device> getAllDevices(Pageable pageable){
+    public Page<DeviceDTO> getAllDevices(Pageable pageable){
         Page<Device> device = deviceRepository.findAll(pageable);
         if(device.isEmpty()){
-            throw new BusinessException("No devices found");
+            throw new ResourceNotFoundException("No devices found");
         }
-        return device;
+        return device.map(DeviceMapper::toDTO);
     }
 }

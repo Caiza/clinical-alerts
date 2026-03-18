@@ -2,57 +2,66 @@ package com.caiza.clinical_alerts.patient;
 
 import com.caiza.clinical_alerts.exception.BusinessException;
 import com.caiza.clinical_alerts.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class PatientService {
 
-    @Autowired
     private PatientRepository patientRepository;
 
-    public Patient create(PatientDTO patientDTO){
+    public PatientDTO create(PatientDTO patientDTO){
         Patient patient = PatientMapper.toEntity(patientDTO);
         if(patientRepository.existsByNumberId(patient.getNumberId())){
             throw new BusinessException("Patient with numberId " + patient.getNumberId() + " already exists.");
         }
-        return patientRepository.save(patient);
+        Patient saved = patientRepository.save(patient);
+        PatientDTO response = PatientMapper.toDTO(saved);
+        return response;
     }
 
-    public Page<Patient> findAll(Pageable pageable){
+    public Page<PatientDTO> findAll(Pageable pageable){
         Page<Patient> patients = patientRepository.findAll(pageable);
         if(patients.isEmpty()){
             throw new ResourceNotFoundException("No patients found.");
         }
-        return patients;
+        Page<PatientDTO> response = patients.map(PatientMapper::toDTO);
+        return response;
     }
 
-    public Patient findById(Long id){
-        return patientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patient with id " + id + " not found."));
+    public PatientDTO findById(Long id){
+        Patient patient = patientRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Patient with id " + id + " not found."));
+        PatientDTO response = PatientMapper.toDTO(patient);
+        return response;
     }
 
-    public Page<Patient> findByStatus(Boolean status, Pageable pageable){
-        Page<Patient> patients = patientRepository.findByStatus(status, pageable);
-        if(patients.isEmpty()){
+    public Page<PatientDTO> findByStatus(Boolean status, Pageable pageable){
+        Page<Patient> patientsList = patientRepository.findByStatus(status, pageable);
+        if(patientsList.isEmpty()){
             throw new ResourceNotFoundException("No patients found with status " + status + ".");
         }
-        return patients;
+        Page<PatientDTO> response = patientsList.map(PatientMapper::toDTO);
+        return response;
     }
 
     public void delete(Long id){
         patientRepository.deleteById(id);
     }
 
-    public Patient updatePatient(Long id, PatientDTO patientDTO){
-        Patient patient = findById(id);
-             Patient newPatient = PatientMapper.toEntity(patientDTO);
-        patient.setName(newPatient.getName());
-        patient.setGender(newPatient.getGender());
-        patient.setStatus(newPatient.getStatus());
-        patient.setDateOfBirth(newPatient.getDateOfBirth());
-        return patientRepository.save(patient);
+    public PatientDTO updatePatient(Long id, PatientDTO patientDTO){
+        Patient newPatient = patientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
+        newPatient.setName(patientDTO.getName());
+        newPatient.setGender(patientDTO.getGender());
+        newPatient.setStatus(patientDTO.getStatus());
+        newPatient.setDateOfBirth(patientDTO.getDateOfBirth());
+        Patient updatePatient =  patientRepository.save(newPatient);
+        return PatientMapper.toDTO(updatePatient);
 
     }
 

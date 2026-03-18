@@ -9,8 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface DeviceRepository extends JpaRepository<Device , Long> {
     Page<Device> findAll(Pageable pageable);
     Device findBySerialNumber(Integer serialNumber);
-    Device getById(Long id);
-
-
 
 }
