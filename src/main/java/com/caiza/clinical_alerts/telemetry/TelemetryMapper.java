@@ -10,6 +10,7 @@ public class TelemetryMapper {
                 telemetry.getValue(),
                 telemetry.getTimestamp(),
                 telemetry.getOptionalMetadata(),
+                telemetry.getMensuredValue(),
                 telemetry.getUnit()
         );
     }
@@ -22,6 +23,7 @@ public class TelemetryMapper {
                 .value(telemetryDTO.getValue())
                 .timestamp(telemetryDTO.getTimestamp())
                 .optionalMetadata(telemetryDTO.getOptionalMetadata())
+                .mensuredValue(telemetryDTO.getMensuredValue())
                 .unit(telemetryDTO.getUnit())
                 .build();
     }

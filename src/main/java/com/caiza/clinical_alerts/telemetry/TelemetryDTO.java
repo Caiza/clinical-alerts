@@ -1,9 +1,10 @@
 package com.caiza.clinical_alerts.telemetry;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
@@ -23,6 +24,9 @@ public class TelemetryDTO {
     @NotNull
     private Instant timestamp;
     private String optionalMetadata;
+    @NotNull
+    private  Double mensuredValue;
     @NotBlank
     private String unit;
+
 }

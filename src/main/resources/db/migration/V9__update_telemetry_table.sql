@@ -1,0 +1,2 @@
+ALTER TABLE telemetry
+ADD COLUMN  mensured_value DOUBLE PRECISION;

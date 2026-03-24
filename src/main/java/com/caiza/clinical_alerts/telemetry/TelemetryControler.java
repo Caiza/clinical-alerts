@@ -1,12 +1,10 @@
 package com.caiza.clinical_alerts.telemetry;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +24,13 @@ public class TelemetryControler {
         return ResponseEntity.ok(response);
 
     }
+
+    @PostMapping
+    public ResponseEntity<Void> receive(@RequestBody @Valid TelemetryDTO dto){
+        telemetryService.received(dto);
+        return ResponseEntity.accepted().build();
+    }
+
     @GetMapping("/list")
     @Operation(summary = "Get all telemetry", description = "Retrieves a list of all telemetry.")
     public ResponseEntity<List<TelemetryDTO>> getAllTelemetry() {

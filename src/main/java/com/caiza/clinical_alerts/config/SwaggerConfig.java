@@ -1,4 +1,4 @@
-package com.caiza.clinical_alerts.swaggerConfig;
+package com.caiza.clinical_alerts.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

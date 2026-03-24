@@ -34,6 +34,8 @@ public class Telemetry {
     private String optionalMetadata;
     @Column(name= "unit")
     private String unit;
+    @Column(name = "mensured_value", precision = 10, scale = 2)
+    private  Double mensuredValue;
 
 
 }

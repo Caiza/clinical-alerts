@@ -1,6 +1,8 @@
 package com.caiza.clinical_alerts.telemetry;
 
 
+import com.caiza.clinical_alerts.telemetry.event.TelemetryEventPublisher;
+import com.caiza.clinical_alerts.telemetry.event.TelemetryReceivedEvent;
 import com.caiza.clinical_alerts.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,31 @@ import static com.caiza.clinical_alerts.telemetry.TelemetryMapper.toTelemetryDTO
 @Transactional
 public class TelemetryService {
 
-    TelemetryRepository telemetryRepository;
+    private final TelemetryRepository telemetryRepository;
+    private final TelemetryEventPublisher publisher;
+
+    public void received(TelemetryDTO dto) {
+        validate(dto);
+        Telemetry entity = toTelemetry(dto);
+        Telemetry saved = telemetryRepository.save(entity);
+
+        TelemetryReceivedEvent event = new TelemetryReceivedEvent(
+                saved.getId(),
+                saved.getPatientId(),
+                saved.getDeviceId(),
+                saved.getType(),
+                saved.getMensuredValue(),
+                saved.getTimestamp()
+        );
+        publisher.publish(event);
+    }
+
+    private void validate(TelemetryDTO dto){
+        if (dto.getMensuredValue() == null){
+            throw new BusinessException("Measured value is required");
+        }
+    }
+
 
     public TelemetryDTO createTelemetryFromDTO(TelemetryDTO telemetryDTO) {
 

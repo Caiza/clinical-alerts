@@ -1,4 +1,4 @@
-package com.caiza.clinical_alerts.deviceAssignmentPatient;
+package com.caiza.clinical_alerts.patientDevice;
 
 public class DevicePatientMapper {
 

@@ -1,4 +1,4 @@
-package com.caiza.clinical_alerts.deviceAssignmentPatient;
+package com.caiza.clinical_alerts.patientDevice;
 
 import com.caiza.clinical_alerts.exception.BusinessException;
 import com.caiza.clinical_alerts.exception.ResourceNotFoundException;
