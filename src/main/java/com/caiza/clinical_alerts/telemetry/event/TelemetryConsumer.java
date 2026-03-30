@@ -1,6 +1,6 @@
 package com.caiza.clinical_alerts.telemetry.event;
 
-import com.caiza.clinical_alerts.alert.AlertService;
+import com.caiza.clinical_alerts.service.AlertService;
 import com.caiza.clinical_alerts.telemetry.rules.RiskLevel;
 import com.caiza.clinical_alerts.telemetry.rules.TelemetryRuleFactory;
 import com.caiza.clinical_alerts.telemetry.rules.TelemetryRulesStrategy;
