@@ -19,15 +19,8 @@ public class TelemetryControler {
     @Autowired
     private TelemetryService telemetryService;
 
-    @PostMapping("/save")
-    @Operation(summary = "Create a new telemetry", description = "Creates a new telemetry with the provided details.")
-    public ResponseEntity<TelemetryDTO> saveTelemetry(TelemetryDTO telemetryDTO) {
-        TelemetryDTO response = telemetryService.createTelemetryFromDTO(telemetryDTO);
-        return ResponseEntity.ok(response);
-
-    }
-
     @PostMapping
+    @Operation(summary = "save telemetry", description = "Receives telemetry data and processes it according to defined rules.")
     public ResponseEntity<Void> receive(@RequestBody @Valid TelemetryDTO dto){
         telemetryService.received(dto);
         return ResponseEntity.accepted().build();
