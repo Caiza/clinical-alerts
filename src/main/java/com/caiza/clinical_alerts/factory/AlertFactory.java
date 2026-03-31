@@ -15,7 +15,7 @@ public class AlertFactory {
         }
         Alert alert = new Alert();
         alert.setCreatedAt(event.timestamp());
-        alert.setSignalType(event.type());
+        alert.setSignalType(event.signalType());
         alert.getDevice().setId(event.deviceId());
         alert.setRiskLevel(riskLevel);
         alert.setMeasuredValue(event.measuredValue());

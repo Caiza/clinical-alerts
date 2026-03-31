@@ -1,6 +1,7 @@
 package com.caiza.clinical_alerts.model;
 
 import com.caiza.clinical_alerts.telemetry.rules.RiskLevel;
+import com.caiza.clinical_alerts.telemetry.rules.SignalType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +30,8 @@ public class Alert {
     @ManyToOne
     @JoinColumn(name = "device_id")
     private Device device;
-    private String signalType;
+    @Enumerated(EnumType.STRING)
+    private SignalType signalType;
     private BigDecimal measuredValue;
     @Enumerated(EnumType.STRING)
     private RiskLevel riskLevel;

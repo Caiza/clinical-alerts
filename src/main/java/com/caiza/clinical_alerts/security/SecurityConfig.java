@@ -27,8 +27,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/test/**").permitAll()
-                        .requestMatchers("/patients/**").permitAll()
-                        .requestMatchers(("/devices/**")).permitAll()
+                        .requestMatchers("/api/patients/**").permitAll()
+                        .requestMatchers("/api/telemetry/**").permitAll()
+                        .requestMatchers(("/api/devices/**")).permitAll()
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",

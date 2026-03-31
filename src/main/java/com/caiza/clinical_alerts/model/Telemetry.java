@@ -1,5 +1,6 @@
 package com.caiza.clinical_alerts.model;
 
+import com.caiza.clinical_alerts.telemetry.rules.SignalType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,9 +26,8 @@ public class Telemetry {
     @Column(name = "patient_id", nullable = false)
     private Long patientId;
     @Column(name = "type", nullable = false)
-    private String type;
-    @Column(name = "value")
-    private String value;
+    @Enumerated(EnumType.STRING)
+    private SignalType type;
     @CreationTimestamp
     @Column(name = "timestamp", nullable = false, updatable = false)
     private Instant timestamp;

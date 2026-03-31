@@ -5,6 +5,7 @@ import com.caiza.clinical_alerts.service.TelemetryService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TelemetryControler {
 
+    @Autowired
     private TelemetryService telemetryService;
 
     @PostMapping("/save")

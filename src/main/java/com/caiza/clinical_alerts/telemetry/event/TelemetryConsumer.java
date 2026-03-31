@@ -17,7 +17,7 @@ public class TelemetryConsumer {
 
     @KafkaListener(topics = "telemetry-topic", groupId = "telemtry-processor")
     public void consume(TelemetryReceivedEvent event){
-        TelemetryRulesStrategy strategy = ruleFactory.getStrategy(event.type());
+        TelemetryRulesStrategy strategy = ruleFactory.getStrategy(event.signalType());
         RiskLevel riskLevel = strategy.evaluate(event);
 
         if(riskLevel != RiskLevel.NORMAL) {

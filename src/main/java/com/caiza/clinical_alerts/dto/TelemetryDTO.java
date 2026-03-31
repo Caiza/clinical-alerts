@@ -1,5 +1,6 @@
 package com.caiza.clinical_alerts.dto;
 
+import com.caiza.clinical_alerts.telemetry.rules.SignalType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,10 +19,8 @@ public class TelemetryDTO {
     private Long deviceId;
     @NotNull
     private Long patientId;
-    @NotBlank
-    private String type;
-    @NotBlank
-    private String value;
+    @NotNull
+    private SignalType type;
     @NotNull
     private Instant timestamp;
     private String optionalMetadata;

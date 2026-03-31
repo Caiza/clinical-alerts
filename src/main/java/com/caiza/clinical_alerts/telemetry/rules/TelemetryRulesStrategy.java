@@ -4,6 +4,6 @@ import com.caiza.clinical_alerts.telemetry.event.TelemetryReceivedEvent;
 
 public interface TelemetryRulesStrategy {
 
-    boolean supports(String signalType);
+    SignalType getSupportedSignalType();
     RiskLevel evaluate(TelemetryReceivedEvent event);
 }

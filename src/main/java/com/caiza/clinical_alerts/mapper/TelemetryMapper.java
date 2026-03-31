@@ -10,7 +10,6 @@ public class TelemetryMapper {
                 telemetry.getDeviceId(),
                 telemetry.getPatientId(),
                 telemetry.getType(),
-                telemetry.getValue(),
                 telemetry.getTimestamp(),
                 telemetry.getOptionalMetadata(),
                 telemetry.getMensuredValue(),
@@ -23,7 +22,6 @@ public class TelemetryMapper {
                 .deviceId(telemetryDTO.getDeviceId())
                 .patientId(telemetryDTO.getPatientId())
                 .type(telemetryDTO.getType())
-                .value(telemetryDTO.getValue())
                 .timestamp(telemetryDTO.getTimestamp())
                 .optionalMetadata(telemetryDTO.getOptionalMetadata())
                 .mensuredValue(telemetryDTO.getMensuredValue())
