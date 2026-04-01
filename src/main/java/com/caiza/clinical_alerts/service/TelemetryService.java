@@ -4,6 +4,8 @@ package com.caiza.clinical_alerts.service;
 import com.caiza.clinical_alerts.dto.TelemetryDTO;
 import com.caiza.clinical_alerts.mapper.TelemetryMapper;
 import com.caiza.clinical_alerts.model.Telemetry;
+import com.caiza.clinical_alerts.repository.DeviceRepository;
+import com.caiza.clinical_alerts.repository.PatientRepository;
 import com.caiza.clinical_alerts.repository.TelemetryRepository;
 import com.caiza.clinical_alerts.telemetry.event.TelemetryEventPublisher;
 import com.caiza.clinical_alerts.telemetry.event.TelemetryReceivedEvent;
@@ -25,10 +27,18 @@ public class TelemetryService {
 
     private final TelemetryRepository telemetryRepository;
     private final TelemetryEventPublisher publisher;
+    private final DeviceRepository deviceRepository;
+    private final PatientRepository patientRepository;
 
     public void received(TelemetryDTO dto) {
         validate(dto);
         Telemetry entity = toTelemetry(dto);
+        if(!deviceRepository.existsById(entity.getDeviceId())){
+            throw new BusinessException("Device with id " + entity.getDeviceId() + " does not exist");
+        }
+        if(!patientRepository.existsById(entity.getPatientId())){
+            throw new BusinessException("Patient with id " + entity.getPatientId() + " does not exist");
+        }
         Telemetry saved = telemetryRepository.save(entity);
 
         TelemetryReceivedEvent event = new TelemetryReceivedEvent(
