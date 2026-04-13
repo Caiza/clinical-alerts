@@ -1,53 +1,53 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
+import { vu } from 'k6/execution';
 
-export let options = {
-  vus: 300,
-  duration: '2m',
+export const options = {
+  scenarios: {
+    telemetry_load: {
+      executor: 'ramping-vus',
+      startVUs: 0,
+      stages: [
+        { duration: '1m', target: 100 },
+        { duration: '3m', target: 300 },
+        { duration: '2m', target: 0 },
+      ],
+    },
+  },
 };
 
-function randomInt(max) {
-  return Math.floor(Math.random() * max) + 1;
-}
+function randomInt(max) { return Math.floor(Math.random() * max) + 1; }
 
-function randomSignal() {
-  const signals = ["HEART_RATE", "OXYGEN_SATURATION", "BLOOD_PRESSURE"];
-  return signals[Math.floor(Math.random() * signals.length)];
-}
-
-function randomValue(type) {
-  switch (type) {
-    case "HEART_RATE":
-      return Math.random() * (160 - 50) + 50;
-    case "OXYGEN_SATURATION":
-      return Math.random() * (100 - 80) + 80;
-    case "BLOOD_PRESSURE":
-      return Math.random() * (180 - 90) + 90;
-    default:
-      return 100;
-  }
-}
+const BASE_URL = 'http://localhost:8081';
 
 export default function () {
+  const signalType = ["HEART_RATE", "OXYGEN_SATURATION", "BLOOD_PRESSURE"][Math.floor(Math.random()*3)];
 
-  const type = randomSignal();
-
-  const payload = JSON.stringify({
+  const payload = {
     deviceId: randomInt(4),
     patientId: randomInt(10),
-    type: type,
+    type: signalType,
     timestamp: new Date().toISOString(),
-    mensuredValue: randomValue(type),
-    unit: type === "OXYGEN_SATURATION" ? "%" : "bpm"
-  });
+    measuredValue: Math.random() * 100 + 50,
+    unit: signalType === "OXYGEN_SATURATION" ? "%" : "bpm"
+  };
 
-  let res = http.post('http://localhost:8081/api/telemetry', payload, {
+  const res = http.post(`${BASE_URL}/api/telemetry`, JSON.stringify(payload), {
     headers: { 'Content-Type': 'application/json' },
   });
 
+  // Check melhorado para diagnóstico
   check(res, {
-    'status ok': (r) => r.status === 200 || r.status === 202,
+    'status is 2xx': (r) => r.status >= 200 && r.status < 300,
+    'status is 200 or 202': (r) => r.status === 200 || r.status === 202,
+    'status 400': (r) => r.status === 400,
+    'status 500': (r) => r.status === 500,
   });
 
-  sleep(0.2);
+  // Mostrar resposta de erro no console (muito útil)
+  if (res.status !== 200 && res.status !== 202) {
+    console.log(`❌ Status: ${res.status} | Body: ${res.body}`);
+  }
+
+  sleep(Math.random() * 15 + 5); // 5 a 20 segundos
 }

@@ -7,24 +7,24 @@ public class TelemetryMapper {
 
     public static TelemetryDTO toTelemetryDTO(Telemetry telemetry) {
         return new TelemetryDTO(
-                telemetry.getDeviceId(),
-                telemetry.getPatientId(),
+                String.valueOf(telemetry.getDeviceId()),
+                String.valueOf(telemetry.getPatientId()),
                 telemetry.getType(),
                 telemetry.getTimestamp(),
                 telemetry.getOptionalMetadata(),
-                telemetry.getMensuredValue(),
+                telemetry.getMeasuredValue(),
                 telemetry.getUnit()
         );
     }
 
     public static Telemetry toTelemetry(TelemetryDTO telemetryDTO) {
         return Telemetry.builder()
-                .deviceId(telemetryDTO.getDeviceId())
-                .patientId(telemetryDTO.getPatientId())
+                .deviceId(Long.valueOf(telemetryDTO.getDeviceId()))
+                .patientId(Long.valueOf(telemetryDTO.getPatientId()))
                 .type(telemetryDTO.getType())
                 .timestamp(telemetryDTO.getTimestamp())
                 .optionalMetadata(telemetryDTO.getOptionalMetadata())
-                .mensuredValue(telemetryDTO.getMensuredValue())
+                .measuredValue(telemetryDTO.getMeasuredValue())
                 .unit(telemetryDTO.getUnit())
                 .build();
     }

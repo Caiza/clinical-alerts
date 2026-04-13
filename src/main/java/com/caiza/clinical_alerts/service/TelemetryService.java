@@ -46,14 +46,14 @@ public class TelemetryService {
                 saved.getPatientId(),
                 saved.getDeviceId(),
                 saved.getType(),
-                saved.getMensuredValue(),
+                saved.getMeasuredValue(),
                 saved.getTimestamp()
         );
         publisher.publish(event);
     }
 
     private void validate(TelemetryDTO dto){
-        if (dto.getMensuredValue() == null){
+        if (dto.getMeasuredValue() == null){
             throw new BusinessException("Measured value is required");
         }
     }

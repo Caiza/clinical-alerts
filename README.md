@@ -455,9 +455,9 @@ mvn spring-boot:run
 ### Prerequisites
 
 Ensure you have installed:
-- **K6**
+- **K6** (version v1.6.1)
 ```bash
-choco install k6 (version v1.6.1)
+choco install k6 
 ```
 
 ### RUN the K6 test
@@ -469,15 +469,3 @@ choco install k6 (version v1.6.1)
   k6 dashboard k6-tests/telemetry_test.js
 ```
 
-@startuml actor Client participant "Rest API" as Controller participant "Service Layer" as Service participant "JPA Repository" as Repository database "PostgreSQL Database" as DB
-
-Client -> Controller : Post /patients/save 
-Controller -> Service : createPatient(patientDTO) 
-Service -> Repository : save(patient) 
-Repository -> DB : INSERT INTO patient (...) 
-DB --> Repository : Patient data 
-Repository --> Service : saved patient 
-Service --> API : patient response 
-API --> Client : HTTP 201 Created
-
-@enduml

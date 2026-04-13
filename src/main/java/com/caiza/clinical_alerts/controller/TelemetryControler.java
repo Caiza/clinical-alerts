@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/telemetry")
@@ -21,9 +22,12 @@ public class TelemetryControler {
 
     @PostMapping
     @Operation(summary = "save telemetry", description = "Receives telemetry data and processes it according to defined rules.")
-    public ResponseEntity<Void> receive(@RequestBody @Valid TelemetryDTO dto){
-        telemetryService.received(dto);
-        return ResponseEntity.accepted().build();
+    public CompletableFuture<ResponseEntity<Void>> receive(@RequestBody @Valid TelemetryDTO dto){
+        return CompletableFuture.supplyAsync(() -> {
+            telemetryService.received(dto);
+            return ResponseEntity.accepted().build();
+        });
+
     }
 
     @GetMapping("/list")

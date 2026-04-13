@@ -7,7 +7,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "telemetry")
@@ -36,7 +35,7 @@ public class Telemetry {
     @Column(name= "unit")
     private String unit;
     @Column(name = "mensured_value", precision = 10, scale = 2)
-    private BigDecimal mensuredValue;
+    private BigDecimal measuredValue;
 
 
 }

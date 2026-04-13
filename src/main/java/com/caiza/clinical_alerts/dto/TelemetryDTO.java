@@ -16,16 +16,16 @@ import java.time.Instant;
 public class TelemetryDTO {
 
     @NotNull
-    private Long deviceId;
+    private String deviceId;
     @NotNull
-    private Long patientId;
+    private String patientId;
     @NotNull
     private SignalType type;
     @NotNull
     private Instant timestamp;
     private String optionalMetadata;
     @NotNull
-    private BigDecimal mensuredValue;
+    private BigDecimal measuredValue;
     @NotBlank
     private String unit;
 
