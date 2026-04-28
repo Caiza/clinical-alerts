@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PatientControler {
 
-    private PatientService patientService;
+    private final PatientService patientService;
 
     @Operation(summary = "Create a new patient", description = "Creates a new patient with the provided details.")
     @PostMapping("/save")

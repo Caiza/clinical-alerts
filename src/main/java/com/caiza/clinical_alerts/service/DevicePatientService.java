@@ -17,7 +17,7 @@ import java.util.Optional;
 @Transactional
 public class DevicePatientService {
 
-        private DevicePatientRepository devicePatientRepository;
+        private final DevicePatientRepository devicePatientRepository;
 
         public DevicePatientDTO createDeviceToPatient(DevicePatientDTO devicePatientDTO) {
             DevicePatient devicePatient = DevicePatientMapper.toDevicePatient(devicePatientDTO);

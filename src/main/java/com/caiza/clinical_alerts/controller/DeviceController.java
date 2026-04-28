@@ -21,7 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DeviceController {
 
-    private DeviceService deviceService;
+    private final DeviceService deviceService;
 
     @PostMapping("/save")
     @Operation(summary = "Create a new device", description = "Creates a new device with the provided details.")

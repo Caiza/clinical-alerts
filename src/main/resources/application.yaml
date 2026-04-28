@@ -3,6 +3,13 @@ spring:
     url: jdbc:postgresql://localhost:5432/clinical
     username: clinical
     password: clinical
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 30000          # 30 seconds
+      idle-timeout: 600000               # 10 minutes
+      max-lifetime: 1800000              # 30 minutes
+      leak-detection-threshold: 30000
   jpa:
     hibernate:
       ddl-auto: validate
@@ -25,7 +32,11 @@ spring:
     locations: classpath:db/migration
 
 server:
-  port: 8081
+  tomcat:
+    threads:
+      max: 400          # default is 200, try 400
+      min-spare: 50
+    connection-timeout: 30s
 
 management:
   endpoints:

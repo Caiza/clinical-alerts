@@ -1,15 +1,21 @@
 package com.caiza.clinical_alerts.controller;
 
-import com.caiza.clinical_alerts.dto.TelemetryDTO;
+import com.caiza.clinical_alerts.dto.telemetry.TelemetryDTO;
 import com.caiza.clinical_alerts.service.TelemetryService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -17,8 +23,25 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class TelemetryControler {
 
-    @Autowired
-    private TelemetryService telemetryService;
+    private final TelemetryService telemetryService;
+
+    private final Environment environment;     // ← Inject here
+
+    @GetMapping("/config-check")
+    public Map<String, Object> checkConfig() {
+        Map<String, Object> config = new HashMap<>();
+
+        config.put("hikari-max-pool-size",
+                environment.getProperty("spring.datasource.hikari.maximum-pool-size"));
+
+        config.put("tomcat-max-threads",
+                environment.getProperty("server.tomcat.threads.max"));
+
+        config.put("server-port",
+                environment.getProperty("server.port"));
+
+        return config;
+    }
 
     @PostMapping
     @Operation(summary = "save telemetry", description = "Receives telemetry data and processes it according to defined rules.")
@@ -32,8 +55,15 @@ public class TelemetryControler {
 
     @GetMapping("/list")
     @Operation(summary = "Get all telemetry", description = "Retrieves a list of all telemetry.")
-    public ResponseEntity<List<TelemetryDTO>> getAllTelemetry() {
-        List<TelemetryDTO> telemetryList = telemetryService.getAllTelemetry();
+    public ResponseEntity<Page<TelemetryDTO>> getAllTelemetry(@RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "10") int size,
+                                                              @RequestParam(defaultValue = "id") String sortBy,
+                                                              @RequestParam(defaultValue = "asc") String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<TelemetryDTO> telemetryList = telemetryService.getAllTelemetry(pageable);
         return ResponseEntity.ok(telemetryList);
     }
 

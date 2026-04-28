@@ -18,7 +18,8 @@ public class KafkaTelemetryEventPublisher implements TelemetryEventPublisher {
 
     @Override
     public void publish(TelemetryReceivedEvent event) {
-        kafkaTemplate.send("telemetry-topic", event.patientId().toString(), event).whenComplete((result, ex) -> {
+        kafkaTemplate.send("telemetry-topic", event.patientId().toString(), event)
+                .whenComplete((result, ex) -> {
             if (ex != null) {
                 log.error("Failed to send to Kafka", ex);
             }

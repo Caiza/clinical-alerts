@@ -1,7 +1,7 @@
 package com.caiza.clinical_alerts.service;
 
 
-import com.caiza.clinical_alerts.dto.TelemetryDTO;
+import com.caiza.clinical_alerts.dto.telemetry.TelemetryDTO;
 import com.caiza.clinical_alerts.mapper.TelemetryMapper;
 import com.caiza.clinical_alerts.model.Telemetry;
 import com.caiza.clinical_alerts.repository.DeviceRepository;
@@ -11,6 +11,8 @@ import com.caiza.clinical_alerts.telemetry.event.TelemetryEventPublisher;
 import com.caiza.clinical_alerts.telemetry.event.TelemetryReceivedEvent;
 import com.caiza.clinical_alerts.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,12 +72,13 @@ public class TelemetryService {
         return toTelemetryDTO(savedTelemetry);
     }
 
-    public List<TelemetryDTO> getAllTelemetry() {
-        List<Telemetry> telemetryList = telemetryRepository.findAll();
+    public Page<TelemetryDTO> getAllTelemetry(Pageable pageable) {
+        Page<Telemetry> telemetryList = telemetryRepository.findAll(pageable);
         if(telemetryList.isEmpty()){
             throw new BusinessException("No telemetry found");
         }
-        return telemetryList.stream().map(TelemetryMapper::toTelemetryDTO).toList();
+        Page<TelemetryDTO> response = telemetryList.map(TelemetryMapper::toTelemetryDTO);
+        return response;
     }
 
     public List<TelemetryDTO> getTelemetryByPatientId(Long patientId) {

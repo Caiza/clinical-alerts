@@ -1,4 +1,4 @@
-package com.caiza.clinical_alerts.dto;
+package com.caiza.clinical_alerts.dto.telemetry;
 
 import com.caiza.clinical_alerts.telemetry.rules.SignalType;
 import jakarta.validation.constraints.NotBlank;

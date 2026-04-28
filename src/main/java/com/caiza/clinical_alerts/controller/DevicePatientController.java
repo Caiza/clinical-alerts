@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequestMapping("/api/device-patient")
 public class DevicePatientController {
 
-        private DevicePatientService devicePatientService;
+        private final DevicePatientService devicePatientService;
 
         @PostMapping("/save")
         @Operation(summary = "Create a new Device to Patiente", description = "Create a new Device to Patiente.")

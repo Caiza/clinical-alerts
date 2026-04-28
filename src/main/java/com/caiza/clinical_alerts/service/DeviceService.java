@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DeviceService {
 
-    public DeviceRepository deviceRepository;
+    public final DeviceRepository deviceRepository;
 
     public DeviceDTO createDevice(Device device){
         Device deviceNew = deviceRepository.findBySerialNumber(device.getSerialNumber());
