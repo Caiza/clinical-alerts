@@ -11,6 +11,7 @@ import com.caiza.clinical_alerts.telemetry.event.TelemetryEventPublisher;
 import com.caiza.clinical_alerts.telemetry.event.TelemetryReceivedEvent;
 import com.caiza.clinical_alerts.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.Optional;
 import static com.caiza.clinical_alerts.mapper.TelemetryMapper.toTelemetry;
 import static com.caiza.clinical_alerts.mapper.TelemetryMapper.toTelemetryDTO;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -33,25 +35,33 @@ public class TelemetryService {
     private final PatientRepository patientRepository;
 
     public void received(TelemetryDTO dto) {
+
         validate(dto);
         Telemetry entity = toTelemetry(dto);
-        if(!deviceRepository.existsById(entity.getDeviceId())){
-            throw new BusinessException("Device with id " + entity.getDeviceId() + " does not exist");
+        try {
+            if (!deviceRepository.existsById(entity.getDeviceId())) {
+                throw new BusinessException("Device with id " + entity.getDeviceId() + " does not exist");
+            }
+            if (!patientRepository.existsById(entity.getPatientId())) {
+                throw new BusinessException("Patient with id " + entity.getPatientId() + " does not exist");
+            }
+            Telemetry saved = telemetryRepository.save(entity);
+            log.info(" Telemetria salva no banco com ID: {}", saved.getId());
+            TelemetryReceivedEvent event = new TelemetryReceivedEvent(
+                    saved.getId(),
+                    saved.getPatientId(),
+                    saved.getDeviceId(),
+                    saved.getType(),
+                    saved.getMeasuredValue(),
+                    saved.getTimestamp()
+            );
+            log.info(" Publicando evento no Kafka...");
+            publisher.publish(event);
+            log.info(" Evento publicado no Kafka com sucesso!");
+        }  catch (Exception e) {
+            log.error("Error processing telemetry: {}", e.getMessage(), e);
+            throw new BusinessException("Failed to process telemetry: " + e.getMessage());
         }
-        if(!patientRepository.existsById(entity.getPatientId())){
-            throw new BusinessException("Patient with id " + entity.getPatientId() + " does not exist");
-        }
-        Telemetry saved = telemetryRepository.save(entity);
-
-        TelemetryReceivedEvent event = new TelemetryReceivedEvent(
-                saved.getId(),
-                saved.getPatientId(),
-                saved.getDeviceId(),
-                saved.getType(),
-                saved.getMeasuredValue(),
-                saved.getTimestamp()
-        );
-        publisher.publish(event);
     }
 
     private void validate(TelemetryDTO dto){

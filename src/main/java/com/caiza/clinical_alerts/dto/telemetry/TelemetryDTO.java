@@ -28,5 +28,6 @@ public class TelemetryDTO {
     private BigDecimal measuredValue;
     @NotBlank
     private String unit;
+    private String eventId;
 
 }

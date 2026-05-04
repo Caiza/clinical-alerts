@@ -5,6 +5,7 @@ import com.caiza.clinical_alerts.service.TelemetryService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,14 +19,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/telemetry")
 @RequiredArgsConstructor
-public class TelemetryControler {
+public class TelemetryController {
 
     private final TelemetryService telemetryService;
-
-    private final Environment environment;     // ← Inject here
+    private final Environment environment;
 
     @GetMapping("/config-check")
     public Map<String, Object> checkConfig() {

@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.caiza</groupId>
-	<artifactId>clinical-alerts</artifactId>
+	<artifactId>clinical-alerts-ingestion</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>clinical-alerts</name>
+	<name>clinical-alerts-ingestion</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
