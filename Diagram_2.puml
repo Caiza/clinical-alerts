@@ -1,0 +1,54 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+skinparam sequenceArrowThickness 2
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+
+actor Client as "Cliente / Dispositivo IoT"
+participant Gateway as "Gateway Service\n(clinical-alerts-gateway)" #lightblue
+participant GController as "TelemetryController" #lightblue
+participant GService as "TelemetryGatewayService" #lightblue
+participant WebClient as "TelemetryIngestionClient\n(WebClient)" #lightblue
+participant Ingestion as "Ingestion Service\n(clinical-alerts-ingestion)" #lightgreen
+participant IController as "TelemetryController" #lightgreen
+participant IService as "TelemetryService" #lightgreen
+database DB as "Banco de Dados\n(PostgreSQL)" #orange
+queue Kafka as "Kafka" #darkorange
+participant Consumer as "Telemetry Consumer\n(@KafkaListener)" #lightgreen
+
+== Fluxo de Telemetria ==
+
+Client -> Gateway: POST /api/telemetry/raw
+Gateway -> GController: receiveRaw(TelemetryRaw)
+GController -> GService: sendTelemetry(raw)
+
+note right of GService
+  @Async + Validação + Mapper
+end note
+
+GService -> WebClient: sendTelemetry(TelemetryDTO)
+WebClient -> Ingestion: POST /api/telemetry
+note right of WebClient: HTTP Reativo (WebClient)
+
+Ingestion -> IController: receive(TelemetryDTO)
+IController -> IService: received(dto)
+
+IService -> IService: validate + toEntity()
+IService -> DB: repository.save()
+DB --> IService: Telemetry salva
+
+IService -> Kafka: publish(TelemetryReceivedEvent)
+Kafka --> IService: Ack
+
+IService --> IController: 202 Accepted
+IController --> WebClient: 202 Accepted
+WebClient --> GService: Sucesso
+GService --> GController: CompletableFuture completado
+GController --> Client: 202 Accepted
+
+== Processamento Assíncrono ==
+
+Kafka -> Consumer: Consome telemetry-topic
+Consumer -> Consumer: Regras de negócio\n(Alertas, etc.)
+@enduml
