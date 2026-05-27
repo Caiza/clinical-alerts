@@ -1,10 +1,13 @@
-package com.caiza.clinical_alerts.security;
+package com.caiza.clinical_alerts.security.config;
 
+import com.caiza.clinical_alerts.security.filter.InternalAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -16,29 +19,37 @@ import org.springframework.security.web.SecurityFilterChain;
 //Enables Spring Security
 //Allows configuration of authentication and authorization
 //Register the application´s security filter
+
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain
-            (HttpSecurity http) throws Exception {
-        return http
-                .csrf(csrf -> csrf.disable())
+    public InternalAuthFilter internalAuthFilter() {
+        return new InternalAuthFilter();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/test/**").permitAll()
-                        .requestMatchers("/api/patients/**").permitAll()
-                        .requestMatchers("/api/telemetry/**").permitAll()
-                        .requestMatchers(("/api/devices/**")).permitAll()
                         .requestMatchers(
-                                "/swagger-ui.html",
+                                "/actuator/**",
+                                "/test/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/v3/api-docs.yaml"
+                                "/swagger-ui.html"
                         ).permitAll()
+
+                        .requestMatchers("/api/telemetry/**").permitAll()
+
+                        .requestMatchers("/api/patients/**", "/api/devices/**").authenticated()
+
                         .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())
-                .build();
+                .httpBasic(Customizer.withDefaults());
+
+        return http.build();
     }
 }

@@ -37,7 +37,7 @@ public class Telemetry {
     @Column(name = "mensured_value", precision = 10, scale = 2)
     private BigDecimal measuredValue;
     @Column(name = "event_id", nullable = false)
-    private Long eventId;
+    private String eventId;
 
 
 }

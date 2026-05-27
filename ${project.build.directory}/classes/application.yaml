@@ -52,8 +52,3 @@ management:
   endpoint:
     prometheus:
       enabled: true
-    
-internal:
-  jwt:
-    secret: "mesma-chave-super-secreta-dos-dois-servicos"
-    expiration: 300000  # 5 minutos em milissegundos

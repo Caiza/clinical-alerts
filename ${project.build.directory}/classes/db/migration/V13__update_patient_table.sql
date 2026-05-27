@@ -1,0 +1,4 @@
+ALTER TABLE patient
+ALTER COLUMN date_of_birth TYPE TIMESTAMP
+USING date_of_birth::TIMESTAMP;
+

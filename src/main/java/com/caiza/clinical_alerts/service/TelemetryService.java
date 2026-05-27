@@ -35,10 +35,13 @@ public class TelemetryService {
     private final PatientRepository patientRepository;
 
     public void received(TelemetryDTO dto) {
+        log.info("=== SERVICE RECEIVED chamado ===");
 
-        validate(dto);
-        Telemetry entity = toTelemetry(dto);
         try {
+            validate(dto);
+            log.info("Validação OK dto {} : ", dto.toString());
+            Telemetry entity = toTelemetry(dto);
+            log.info("Conversão para Entity OK");
             if (!deviceRepository.existsById(entity.getDeviceId())) {
                 throw new BusinessException("Device with id " + entity.getDeviceId() + " does not exist");
             }

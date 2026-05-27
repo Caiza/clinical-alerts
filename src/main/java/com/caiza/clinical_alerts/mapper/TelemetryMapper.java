@@ -29,7 +29,7 @@ public class TelemetryMapper {
                 .optionalMetadata(telemetryDTO.getOptionalMetadata())
                 .measuredValue(telemetryDTO.getMeasuredValue())
                 .unit(telemetryDTO.getUnit())
-                .eventId(Long.valueOf(telemetryDTO.getEventId()))
+                .eventId(telemetryDTO.getEventId())
                 .build();
     }
 

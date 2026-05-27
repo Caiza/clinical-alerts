@@ -47,6 +47,8 @@ public class TelemetryController {
     @PostMapping
     @Operation(summary = "save telemetry", description = "Receives telemetry data and processes it according to defined rules.")
     public CompletableFuture<ResponseEntity<Void>> receive(@RequestBody @Valid TelemetryDTO dto){
+        log.info("=== INGESTION RECEBEU DTO === Device: {} | Type: {} | Value: {}",
+                dto.getDeviceId(), dto.getType(), dto.getMeasuredValue());
         return CompletableFuture.supplyAsync(() -> {
             telemetryService.received(dto);
             return ResponseEntity.accepted().build();

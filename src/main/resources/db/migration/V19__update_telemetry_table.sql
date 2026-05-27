@@ -1,0 +1,6 @@
+ALTER TABLE telemetry DROP COLUMN IF EXISTS event_id;
+
+ALTER TABLE telemetry
+    ADD COLUMN event_id VARCHAR(255) NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000';
+
+CREATE INDEX IF NOT EXISTS idx_telemetry_event_id ON telemetry(event_id);

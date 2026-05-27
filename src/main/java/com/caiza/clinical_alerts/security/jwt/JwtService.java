@@ -1,4 +1,4 @@
-package com.caiza.clinical_alerts.security;
+package com.caiza.clinical_alerts.security.jwt;
 
 import org.springframework.stereotype.Service;
 
